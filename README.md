@@ -1,4 +1,4 @@
-# cowboy_vs_ninja_a
+# cowboy_vs_ninja_b
 
 בתרגיל זה ניצור סימולציה של קרב בין נינגות ובוקרים
 
