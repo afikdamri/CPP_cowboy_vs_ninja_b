@@ -4,8 +4,7 @@
 namespace ariel
 {
     OldNinja::OldNinja(const std::string &name, const Point &location)
-            : Ninja(name, DEFAULT_DAMAGE, location, DEFAULT_SPPED){}
-
+        : Ninja(name, DEFAULT_DAMAGE, location, DEFAULT_SPPED) {}
 
     std::string OldNinja::print() const
     {

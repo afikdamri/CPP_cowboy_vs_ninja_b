@@ -17,18 +17,23 @@ namespace ariel
     private:
         static const int MAX_FIGHTERS = 10;
         Character *leader_;
-        std::vector<Character *> fighters_;
-        Character *findCharacter(const Character *character, const std::vector<Character *> &characters) const;
-        void chooseNewLeader();
-
-
+        std::vector<Character*> fighters_;
+        
     public:
-        Team() : leader_(nullptr) {};
+        Team() : leader_(nullptr){};
         Team(Character *leader);
+        
+        std::vector<Character*> &getFighters();
         void add(Character *fighter);
         void attack(Team *enemyTeam);
         int stillAlive() const;
         void print() const;
+
+        void cowboysAttack(Character *fighter,Character *victim);
+        void ninjasAttack(Character *fighter,Character *victim);
+
+        Character *findCharacter(const Character *character, const std::vector<Character*> &characters) const;
+        void chooseNewLeader();
 
         ~Team();
         Team(const Team&) = delete; // Delete copy constructor
@@ -38,4 +43,4 @@ namespace ariel
     };
 }
 
-#endif // TEAM_HPP
+#endif

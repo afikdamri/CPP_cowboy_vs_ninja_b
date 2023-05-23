@@ -3,14 +3,29 @@
 namespace ariel
 {
     Cowboy::Cowboy(const std::string &name, const Point &location)
-            : Character(name, location, DEFAULT_LIVE), bullets_(DEFAULT_BULLETS){}
+        : Character(name, location, DEFAULT_LIVE), bullets_(DEFAULT_BULLETS) {}
 
     void Cowboy::shoot(Character *enemy)
     {
-        if (isAlive() && bullets_ > 0)
+        if (enemy == this)
         {
-            enemy->hit(10);
-            bullets_--;
+            throw std::runtime_error("Cannot shoot oneself");
+        }
+        else if (!isAlive())
+        {
+            throw std::runtime_error("Cannot attack with a dead character");
+        }
+        else if (enemy->isAlive())
+        {
+            if (bullets_ > 0)
+            {
+                enemy->hit(10);
+                bullets_--;
+            }
+        }
+        else
+        {
+           return;
         }
     }
 
@@ -21,6 +36,10 @@ namespace ariel
 
     void Cowboy::reload()
     {
+        if (!isAlive())
+        {
+            throw std::runtime_error("Cannot reload with a dead character");
+        }
         bullets_ = 6;
     }
 

@@ -13,7 +13,7 @@
 using namespace std;
 
 #include "sources/Team.hpp" //no need for other includes
-
+//#include "sources/Team2.hpp" //no need for other includes
 using namespace ariel;
 
 
@@ -28,6 +28,8 @@ int main() {
     sushi->move(tom);
     sushi->slash(tom);
 
+    cout << tom->print() <<endl;
+    cout << sushi->print() <<endl;
     Team team_A(tom); 
     team_A.add(new YoungNinja("Yogi", Point(64,57)));
 
@@ -36,12 +38,10 @@ int main() {
      Team team_B(sushi);
      team_B.add(new TrainedNinja("Hikari", Point(12,81)));
 
-
      while(team_A.stillAlive() > 0 && team_B.stillAlive() > 0){
         team_A.attack(&team_B);
         team_B.attack(&team_A);
-        cout << "-----" << team_A.stillAlive() << endl;
-        cout << "-----" << team_B.stillAlive() << endl;
+        cout << endl;
         team_A.print();
         team_B.print();
      }

@@ -1,10 +1,13 @@
 #include "Character.hpp"
+#include "Cowboy.hpp"
+#include "Ninja.hpp"
+
 using namespace std;
 
 namespace ariel
 {
     Character::Character(const string &name, const Point &location, int hitPoints)
-        : name_(name), hitPoints_(hitPoints), location_(location) {}
+        : name_(name), hitPoints_(hitPoints), location_(location) { inTeam_ = 0; }
 
     bool Character::isAlive() const
     {
@@ -13,17 +16,17 @@ namespace ariel
 
     double Character::distance(const Character *otherCharacter) const
     {
-        return location_.distance(otherCharacter->location_);
+        return location_.distance(otherCharacter->getLocation());
     }
-
-    /*void Character::hit(int amount)
-    {
-        hitPoints_ -= amount;
-    }*/
 
     std::string Character::getName() const
     {
         return name_;
+    }
+
+    void Character::setLocation(const Point &newLocation)
+    {
+        location_ = newLocation;
     }
 
     int Character::getHitPoints() const
@@ -53,7 +56,12 @@ namespace ariel
 
     void Character::hit(int amount)
     {
+        if (amount < 0)
+            throw std::invalid_argument("Negative hit amount is not allowed.");
+
         hitPoints_ -= amount;
+        // cout << amount <<endl;
+        // cout<< hitPoints_<<endl;
         if (hitPoints_ < 0)
         {
             hitPoints_ = 0;
@@ -69,4 +77,21 @@ namespace ariel
     {
         inTeam_ = 1;
     }
+
+    char Character::getType() const
+    {
+        if (dynamic_cast<const Cowboy*>(this))
+        {
+            return 'c'; // Cowboy
+        }
+        else if (dynamic_cast<const Ninja*>(this))
+        {
+            return 'n'; // Ninja
+        }
+        else
+        {
+            return 'u'; // Unknown
+        }
+    }
+
 }

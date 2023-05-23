@@ -1,4 +1,5 @@
 #include "Ninja.hpp"
+
 namespace ariel
 {
     Ninja::Ninja(const std::string &name, int hitPoints, const Point &location, int speed)
@@ -14,16 +15,32 @@ namespace ariel
             double dy = enemy->getLocation().getY() - getLocation().getY();
             double newX = getLocation().getX() + dx * ratio;
             double newY = getLocation().getY() + dy * ratio;
-            getLocation() = Point(newX, newY);
+            setLocation(Point(newX, newY));
+        }
+        else{
+            setLocation(Point(enemy->getLocation()));
+
         }
     }
 
     void Ninja::slash(Character *enemy)
     {
-        double distance = getLocation().distance(enemy->getLocation());
-        if (isAlive() && distance < 1.0)
+        if (enemy == this)
+            throw std::runtime_error("Cannot attack oneself. (Ninja::slash)");
+
+        else if (!isAlive())
+            throw std::runtime_error("Cannot attack with a dead character. (Ninja::slash)");
+
+        else if (enemy->isAlive())
         {
-            enemy->hit(40);
+            double distance = getLocation().distance(enemy->getLocation());
+            if (distance < 1.0)
+                enemy->hit(40);
+
         }
+        else
+            return;
+
     }
+
 }

@@ -1,158 +1,50 @@
 #include "Team2.hpp"
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <iostream>
+#include <stdexcept>
 #include <limits>
 using namespace std;
 
 namespace ariel
 {
-    Character *Team2::findCharacter(const Character *character, const std::vector<Character *> &characters) const
-    {
-        double minDistance = std::numeric_limits<double>::max();
-        Character *closestCharacter = nullptr;
-
-        for (Character *enemy : characters)
-        {
-            if (enemy->isAlive())
-            {
-                double distance = character->getLocation().distance(enemy->getLocation());
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestCharacter = enemy;
-                }
-            }
-        }
-
-        return closestCharacter;
-    }
-
-    void Team2::chooseNewLeader()
-    {
-        Character *newLeader = nullptr;
-        double minDistance = std::numeric_limits<double>::max();
-
-        for (Character *fighter : fighters_)
-        {
-            if (fighter->isAlive())
-            {
-                double distance = leader_->getLocation().distance(fighter->getLocation());
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    newLeader = fighter;
-                }
-            }
-        }
-
-        leader_ = newLeader;
-    }
-
     Team2::Team2(Character *leader) : leader_(leader)
     {
-        for (Character *teamFighter : fighters_)
-        {
-            if (teamFighter == leader)
-            {
-                throw std::runtime_error("Character is already in a team.");
-            }
-        }
+        if (leader->isInTeam())
+            throw runtime_error("Character is already in a team. (Team::Team)");
 
         fighters_.push_back(leader);
+        leader->setInTeam();
+        leader_ = leader;
     }
 
     void Team2::add(Character *fighter)
     {
+        if (!fighter->isAlive())
+            throw runtime_error("dead Character. (Team::add)");
+
         if (fighter->isInTeam())
-        {
-            throw std::runtime_error("Character is already in a team.");
-        }
+            throw runtime_error("Character is already in a team. (Team::add)");
 
         if (fighters_.size() >= MAX_FIGHTERS)
+            throw runtime_error("Team is already at maximum capacity. (Team::add)");
+
+        for (Character *existingFighter : fighters_)
         {
-            throw std::runtime_error("Team is already at maximum capacity.");
+            if (existingFighter == fighter)
+                throw runtime_error("Character is already in the team. (Team::add)");
         }
 
-        fighter->setInTeam(); // Set the flag indicating the character is in a team
+        fighter->setInTeam();
         fighters_.push_back(fighter);
-    }
-
-    void Team2::attack(Team2 *enemyTeam)
-    {
-        if (enemyTeam == nullptr)
-        {
-            throw std::invalid_argument("null enemyTeam pointr!");
-        }
-        if (stillAlive() == 0 || enemyTeam->stillAlive() == 0)
-        {
-            return; // End the attack if there are no living members in either group
-        }
-
-        if (!leader_->isAlive())
-        {
-            chooseNewLeader();
-        }
-
-        Character *victim = findCharacter(leader_, enemyTeam->fighters_);
-        while (victim)
-        {
-            for (Character *fighter : fighters_)
-            {
-                if (fighter->isAlive())
-                {
-                    Cowboy *cowboy = dynamic_cast<Cowboy *>(fighter);
-                    if (cowboy && cowboy->hasboolets())
-                    {
-                        cowboy->shoot(victim);
-                    }
-                    else if (cowboy)
-                    {
-                        cowboy->reload();
-                    }
-
-                    Ninja *ninja = dynamic_cast<Ninja *>(fighter);
-                    if (ninja && ninja->getLocation().distance(victim->getLocation()) <= 1.0)
-                    {
-                        ninja->slash(victim);
-                    }
-                    else if (ninja)
-                    {
-                        ninja->move(victim);
-                    }
-
-                    // Update hitPoints_ of victim and handle death
-                    int prevHitPoints = victim->getHitPoints();
-                    fighter->hit(10); // Adjust the amount as needed
-
-                    if (prevHitPoints > 0 && victim->getHitPoints() <= 0)
-                    {
-                        victim->hit(0); // Set hitPoints_ to 0 if the victim died
-                    }
-                }
-            }
-
-            if (!victim->isAlive())
-            {
-                victim = findCharacter(leader_, enemyTeam->fighters_);
-            }
-            else
-            {
-                break;
-            }
-        }
     }
 
     int Team2::stillAlive() const
     {
         int count = 0;
-        for (Character *fighter : fighters_)
+        for (Character *liveingFighter : fighters_)
         {
-            if (fighter->isAlive())
-            {
+            if (liveingFighter->isAlive())
                 count++;
-            }
+            if (!liveingFighter->isInTeam())
+                liveingFighter->setInTeam();
         }
         return count;
     }
@@ -170,6 +62,121 @@ namespace ariel
         for (Character *fighter : fighters_)
         {
             delete fighter;
+        }
+    }
+
+    void Team2::chooseNewLeader()
+    {
+        Character *newLeader = nullptr;
+        double minDistance = numeric_limits<double>::max();
+
+        for (Character *fighter : fighters_)
+        {
+            if (fighter->isAlive())
+            {
+                double distance = leader_->getLocation().distance(fighter->getLocation());
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    newLeader = fighter;
+                }
+            }
+        }
+        if (newLeader == nullptr)
+            cout << "All the team die. (Team::chooseNewLeader)" << endl;
+        leader_ = newLeader;
+    }
+
+    Character *Team2::findCharacter(const Character *enemyLeader, const vector<Character *> &characters) const
+    {
+        double minDistance = numeric_limits<double>::max();
+        Character *closestCharacter = nullptr;
+
+        for (Character *enemy : characters)
+        {
+            if (enemy->isAlive() && enemy != enemyLeader) // Exclude the current character from consideration
+            {
+                double distance = enemyLeader->getLocation().distance(enemy->getLocation());
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestCharacter = enemy;
+                }
+            }
+        }
+        return closestCharacter;
+    }
+
+    std::vector<Character*> &Team2::getFighters()
+    {
+        return this->fighters_;
+    }
+
+    void Team2::cowboysAttack(Character * fighter,Character *victim)
+    {
+        Cowboy *cowboy = dynamic_cast<Cowboy*>(fighter);
+        if (!cowboy->isAlive())
+            return;;
+
+        if (cowboy->hasboolets())
+            cowboy->shoot(victim);
+
+        else
+            cowboy->reload();
+    }
+
+
+    void Team2::ninjasAttack(Character *fighter, Character *victim)
+    {
+        Ninja *ninja = dynamic_cast<Ninja*>(fighter);
+        double distance = ninja->getLocation().distance(victim->getLocation());
+        if (!ninja->isAlive())
+            return;
+
+        if (distance <= 1.0)
+            ninja->slash(victim);
+
+        else
+            ninja->move(victim);
+    }
+
+    void Team2::attack(Team *enemyTeam)
+    {
+        if (enemyTeam == nullptr)
+            throw invalid_argument("null enemyTeam pointer. (Team::attack)");
+
+        if (stillAlive() == 0)
+            return;
+
+        if (enemyTeam->stillAlive() == 0)
+            return;
+
+        if (!leader_->isAlive())
+            chooseNewLeader();
+
+        Character *victim = findCharacter(leader_, enemyTeam->getFighters());
+        if (victim != nullptr && victim->isAlive())
+        {
+            for (Character *fighter : fighters_)
+            {
+                if (fighter->isAlive())
+                {
+                    for (Character *fighter : fighters_)
+                    {
+                        for (Character *fighter : fighters_)
+                        {
+                            if (fighter->getType() == 'c')
+                                cowboysAttack(fighter, victim);
+
+                            if (fighter->getType() == 'n')
+                                ninjasAttack(fighter, victim);
+
+                            if (fighter->getType() == 'u')
+                                break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

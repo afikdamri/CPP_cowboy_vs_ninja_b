@@ -14,7 +14,8 @@ namespace ariel
 
     double Point::distance(const Point &point) const
     {
-        double distance = pow(point.posX_ - posX_, 2) + pow(point.posY_ - posY_, 2);
+        double distance = pow(posX_ - point.posX_, 2) + pow(posY_ - point.posY_ , 2);
+        //std::cout << distance << "========" <<endl;
         distance = sqrt(distance);
         return distance;
     }

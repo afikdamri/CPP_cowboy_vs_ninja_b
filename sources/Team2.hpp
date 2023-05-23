@@ -12,16 +12,22 @@ namespace ariel
         std::vector<Character*> fighters_;
         Character *leader_;
 
+    public:
+        Team2() : leader_(nullptr){};
+        Team2(Character *leader);
+        
+        std::vector<Character*> &getFighters();
+        void add(Character *fighter);
+        void attack(Team *enemyTeam);
+        int stillAlive() const;
+        void print() const;
+
+        void cowboysAttack(Character * fighter,Character *victim);
+        void ninjasAttack(Character * fighter,Character *victim);
+
         Character *findCharacter(const Character *character, const std::vector<Character*> &characters) const;
         void chooseNewLeader();
 
-    public:
-        Team2(Character *leader);
-
-        void add(Character* fighter);
-        void attack(Team2* enemyTeam);
-        void print() const;
-        int stillAlive() const;
 
         ~Team2();
         Team2(const Team2&) = delete; // Delete copy constructor
