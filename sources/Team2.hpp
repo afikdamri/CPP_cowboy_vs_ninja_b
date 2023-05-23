@@ -18,7 +18,9 @@ namespace ariel
         
         std::vector<Character*> &getFighters();
         void add(Character *fighter);
+
         void attack(Team *enemyTeam);
+        
         int stillAlive() const;
         void print() const;
 

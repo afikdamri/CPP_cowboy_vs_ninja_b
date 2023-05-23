@@ -17,30 +17,26 @@ namespace ariel
             double newY = getLocation().getY() + dy * ratio;
             setLocation(Point(newX, newY));
         }
-        else{
+        else
             setLocation(Point(enemy->getLocation()));
-
-        }
     }
 
     void Ninja::slash(Character *enemy)
     {
+        if(!enemy->isAlive())
+            throw std::runtime_error("Cannot attack a dead enemy. (Ninja::slash)");
+
         if (enemy == this)
             throw std::runtime_error("Cannot attack oneself. (Ninja::slash)");
 
-        else if (!isAlive())
+        if (!isAlive())
             throw std::runtime_error("Cannot attack with a dead character. (Ninja::slash)");
 
-        else if (enemy->isAlive())
+        if (enemy->isAlive())
         {
             double distance = getLocation().distance(enemy->getLocation());
             if (distance < 1.0)
                 enemy->hit(40);
-
         }
-        else
-            return;
-
     }
-
 }

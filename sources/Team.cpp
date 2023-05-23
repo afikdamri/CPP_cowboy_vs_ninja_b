@@ -115,8 +115,8 @@ namespace ariel
     void Team::cowboysAttack(Character * fighter,Character *victim)
     {
         Cowboy *cowboy = dynamic_cast<Cowboy*>(fighter);
-        if (!cowboy->isAlive())
-            return;;
+        if (!cowboy->isAlive() || !victim->isAlive())
+            return;
 
         if (cowboy->hasboolets())
             cowboy->shoot(victim);
@@ -130,7 +130,7 @@ namespace ariel
     {
         Ninja *ninja = dynamic_cast<Ninja*>(fighter);
         double distance = ninja->getLocation().distance(victim->getLocation());
-        if (!ninja->isAlive())
+        if (!ninja->isAlive() || !victim->isAlive())
             return;
 
         if (distance <= 1.0)
@@ -149,6 +149,7 @@ namespace ariel
             return;
 
         if (enemyTeam->stillAlive() == 0)
+            //throw runtime_error("enemyTeam id dead. (Team::attack)");
             return;
 
         if (!leader_->isAlive())
@@ -159,23 +160,14 @@ namespace ariel
         {
             for (Character *fighter : fighters_)
             {
-                if (fighter->isAlive())
-                {
-                    for (Character *fighter : fighters_)
-                    {
-                        for (Character *fighter : fighters_)
-                        {
-                            if (fighter->getType() == 'c')
-                                cowboysAttack(fighter, victim);
+                if (fighter->getType() == 'c')
+                    cowboysAttack(fighter, victim);
 
-                            if (fighter->getType() == 'n')
-                                ninjasAttack(fighter, victim);
+                if (fighter->getType() == 'n')
+                    ninjasAttack(fighter, victim);
 
-                            if (fighter->getType() == 'u')
-                                break;
-                        }
-                    }
-                }
+                if (fighter->getType() == 'u')
+                    break;                       
             }
         }
     }

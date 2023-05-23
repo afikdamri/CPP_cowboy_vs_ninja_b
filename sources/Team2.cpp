@@ -107,16 +107,16 @@ namespace ariel
         return closestCharacter;
     }
 
-    std::vector<Character*> &Team2::getFighters()
+    std::vector<Character *> &Team2::getFighters()
     {
         return this->fighters_;
     }
 
-    void Team2::cowboysAttack(Character * fighter,Character *victim)
+    void Team2::cowboysAttack(Character *fighter, Character *victim)
     {
-        Cowboy *cowboy = dynamic_cast<Cowboy*>(fighter);
-        if (!cowboy->isAlive())
-            return;;
+        Cowboy *cowboy = dynamic_cast<Cowboy *>(fighter);
+        if (!cowboy->isAlive() || !victim->isAlive())
+            return;
 
         if (cowboy->hasboolets())
             cowboy->shoot(victim);
@@ -125,12 +125,11 @@ namespace ariel
             cowboy->reload();
     }
 
-
     void Team2::ninjasAttack(Character *fighter, Character *victim)
     {
-        Ninja *ninja = dynamic_cast<Ninja*>(fighter);
+        Ninja *ninja = dynamic_cast<Ninja *>(fighter);
         double distance = ninja->getLocation().distance(victim->getLocation());
-        if (!ninja->isAlive())
+        if (!ninja->isAlive() || !victim->isAlive())
             return;
 
         if (distance <= 1.0)
@@ -150,6 +149,7 @@ namespace ariel
 
         if (enemyTeam->stillAlive() == 0)
             return;
+            //throw runtime_error("enemyTeam id dead. (Team::attack)");
 
         if (!leader_->isAlive())
             chooseNewLeader();
@@ -159,23 +159,14 @@ namespace ariel
         {
             for (Character *fighter : fighters_)
             {
-                if (fighter->isAlive())
-                {
-                    for (Character *fighter : fighters_)
-                    {
-                        for (Character *fighter : fighters_)
-                        {
-                            if (fighter->getType() == 'c')
-                                cowboysAttack(fighter, victim);
+                if (fighter->getType() == 'c')
+                    cowboysAttack(fighter, victim);
 
-                            if (fighter->getType() == 'n')
-                                ninjasAttack(fighter, victim);
+                if (fighter->getType() == 'n')
+                    ninjasAttack(fighter, victim);
 
-                            if (fighter->getType() == 'u')
-                                break;
-                        }
-                    }
-                }
+                if (fighter->getType() == 'u')
+                    break;
             }
         }
     }
