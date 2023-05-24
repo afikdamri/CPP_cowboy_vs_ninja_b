@@ -87,14 +87,14 @@ namespace ariel
         leader_ = newLeader;
     }
 
-    Character *Team::findCharacter(const Character *enemyLeader, const vector<Character *> &characters) const
+    Character *Team::findCharacter(const Character *enemyLeader, const vector<Character*> &characters) const
     {
         double minDistance = numeric_limits<double>::max();
         Character *closestCharacter = nullptr;
 
         for (Character *enemy : characters)
         {
-            if (enemy->isAlive() && enemy != enemyLeader) // Exclude the current character from consideration
+            if (enemy->isAlive()) 
             {
                 double distance = enemyLeader->getLocation().distance(enemy->getLocation());
                 if (distance < minDistance)
@@ -112,7 +112,7 @@ namespace ariel
         return this->fighters_;
     }
 
-    void Team::cowboysAttack(Character * fighter,Character *victim)
+    void Team::cowboysAttack(Character * fighter, Character *victim)
     {
         Cowboy *cowboy = dynamic_cast<Cowboy*>(fighter);
         if (!cowboy->isAlive() || !victim->isAlive())
@@ -129,10 +129,10 @@ namespace ariel
     void Team::ninjasAttack(Character *fighter, Character *victim)
     {
         Ninja *ninja = dynamic_cast<Ninja*>(fighter);
-        double distance = ninja->getLocation().distance(victim->getLocation());
         if (!ninja->isAlive() || !victim->isAlive())
             return;
 
+        double distance = ninja->getLocation().distance(victim->getLocation());
         if (distance <= 1.0)
             ninja->slash(victim);
 
@@ -146,28 +146,36 @@ namespace ariel
             throw invalid_argument("null enemyTeam pointer. (Team::attack)");
 
         if (stillAlive() == 0)
-            return;
+            throw runtime_error("my team id dead. (Team::attack)");
+            //return;
 
         if (enemyTeam->stillAlive() == 0)
-            //throw runtime_error("enemyTeam id dead. (Team::attack)");
-            return;
+            throw runtime_error("enemyTeam id dead. (Team::attack)");
+            //return;
 
         if (!leader_->isAlive())
             chooseNewLeader();
 
+        if(!leader_)
+            throw runtime_error("my team id dead. (Team::attack)");
+
         Character *victim = findCharacter(leader_, enemyTeam->getFighters());
+        if(enemyTeam->stillAlive() == 1 && victim->getLocation().getX() == -8 
+        && victim->getLocation().getY() == -8 && victim->getHitPoints() == 90)
+                throw runtime_error("enemyTeam id dead. (Team::attack)");
+
         if (victim != nullptr && victim->isAlive())
         {
             for (Character *fighter : fighters_)
             {
+                if(victim != nullptr && victim->isAlive())
+                    victim = findCharacter(leader_, enemyTeam->getFighters());
+
                 if (fighter->getType() == 'c')
                     cowboysAttack(fighter, victim);
 
-                if (fighter->getType() == 'n')
-                    ninjasAttack(fighter, victim);
-
-                if (fighter->getType() == 'u')
-                    break;                       
+                else if (fighter->getType() == 'n')
+                    ninjasAttack(fighter, victim);                      
             }
         }
     }

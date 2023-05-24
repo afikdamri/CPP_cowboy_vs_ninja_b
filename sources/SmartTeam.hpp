@@ -11,7 +11,7 @@
 
 namespace ariel
 {
-    class SmartTeam
+    class SmartTeam 
     {
     private:
         static const int MAX_FIGHTERS = 10;
@@ -25,7 +25,7 @@ namespace ariel
         SmartTeam(Character *leader);
 
         void add(Character *fighter);
-        virtual void attack(SmartTeam *enemySmartTeam); // Made the attack function virtual
+        virtual void attack(SmartTeam *enemySmartTeam);
         void print() const;
         int stillAlive() const;
 

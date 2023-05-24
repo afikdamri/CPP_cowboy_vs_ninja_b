@@ -8,10 +8,10 @@ namespace ariel
     void Cowboy::shoot(Character *enemy)
     {
         if (enemy == this)
-            throw std::runtime_error("Cannot shoot oneself");
+            throw std::runtime_error("Cannot shoot oneself. (Cowboy::shoot)");
 
         if (!isAlive())
-            throw std::runtime_error("Cannot attack with a dead character");
+            throw std::runtime_error("Cannot attack with a dead character. (Cowboy::shoot)");
 
         if (enemy->isAlive())
         {

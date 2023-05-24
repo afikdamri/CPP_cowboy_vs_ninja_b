@@ -60,8 +60,6 @@ namespace ariel
             throw std::invalid_argument("Negative hit amount is not allowed.");
 
         hitPoints_ -= amount;
-        // cout << amount <<endl;
-        // cout<< hitPoints_<<endl;
         if (hitPoints_ < 0)
         {
             hitPoints_ = 0;
@@ -81,17 +79,11 @@ namespace ariel
     char Character::getType() const
     {
         if (dynamic_cast<const Cowboy*>(this))
-        {
             return 'c'; // Cowboy
-        }
-        else if (dynamic_cast<const Ninja*>(this))
-        {
-            return 'n'; // Ninja
-        }
+
         else
-        {
-            return 'u'; // Unknown
-        }
+            return 'n'; // Ninja
+
     }
 
 }

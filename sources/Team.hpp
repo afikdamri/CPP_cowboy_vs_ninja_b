@@ -29,8 +29,8 @@ namespace ariel
         int stillAlive() const;
         void print() const;
 
-        void cowboysAttack(Character *fighter,Character *victim);
-        void ninjasAttack(Character *fighter,Character *victim);
+        void cowboysAttack(Character *fighter, Character *victim);
+        void ninjasAttack(Character *fighter, Character *victim);
 
         Character *findCharacter(const Character *character, const std::vector<Character*> &characters) const;
         void chooseNewLeader();

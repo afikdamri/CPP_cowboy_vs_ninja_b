@@ -5,17 +5,17 @@ using namespace std;
 
 namespace ariel
 {
-    Team2::Team2(Character *leader) : leader_(leader)
+    Team2::Team2(Character *leader) : Team(leader)
     {
-        if (leader->isInTeam())
+        /*if (leader->isInTeam())
             throw runtime_error("Character is already in a team. (Team::Team)");
 
         fighters_.push_back(leader);
         leader->setInTeam();
-        leader_ = leader;
+        leader_ = leader;*/
     }
 
-    void Team2::add(Character *fighter)
+    /*void Team2::add(Character *fighter)
     {
         if (!fighter->isAlive())
             throw runtime_error("dead Character. (Team::add)");
@@ -148,8 +148,7 @@ namespace ariel
             return;
 
         if (enemyTeam->stillAlive() == 0)
-            return;
-            //throw runtime_error("enemyTeam id dead. (Team::attack)");
+            throw runtime_error("enemyTeam id dead. (Team::attack)");
 
         if (!leader_->isAlive())
             chooseNewLeader();
@@ -169,5 +168,5 @@ namespace ariel
                     break;
             }
         }
-    }
+    }*/
 }

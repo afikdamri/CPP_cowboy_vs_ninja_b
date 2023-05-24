@@ -34,8 +34,8 @@ namespace ariel
 
         if (enemy->isAlive())
         {
-            double distance = getLocation().distance(enemy->getLocation());
-            if (distance < 1.0)
+            double distance = this->getLocation().distance(enemy->getLocation());
+            if (distance <= 1.0)
                 enemy->hit(40);
         }
     }

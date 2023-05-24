@@ -13,6 +13,6 @@ namespace ariel
         double getX() const;
         double getY() const;
         void print() const;
-        static Point moveTowards(const Point &p1, const Point &p2, double maxDistanceDelta);
+        static Point moveTowards(const Point &point1, const Point &point2, double maxDistanceDelta);
     };
 }

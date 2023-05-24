@@ -8,15 +8,15 @@ namespace ariel
     class Team2 : public Team
     {
     private:
-        static const int MAX_FIGHTERS = 10;
+        /*static const int MAX_FIGHTERS = 10;
         std::vector<Character*> fighters_;
-        Character *leader_;
+        Character *leader_;*/
 
     public:
-        Team2() : leader_(nullptr){};
+        Team2() : Team(nullptr){};
         Team2(Character *leader);
         
-        std::vector<Character*> &getFighters();
+        /*std::vector<Character*> &getFighters();
         void add(Character *fighter);
 
         void attack(Team *enemyTeam);
@@ -35,7 +35,7 @@ namespace ariel
         Team2(const Team2&) = delete; // Delete copy constructor
         Team2& operator=(const Team2&) = delete; // Delete copy assignment operator
         Team2(Team2&&) = delete; // Delete move constructor
-        Team2& operator=(Team2&&) = delete; // Delete move assignment operator
+        Team2& operator=(Team2&&) = delete; // Delete move assignment operator*/
     };
 }
 
